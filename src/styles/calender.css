@@ -1,0 +1,299 @@
+/* مظهر عام للتقويم */
+.my-custom-calendar {
+  font-family: "Cairo", sans-serif;
+}
+
+/* عنوان الشريط العلوي */
+.my-custom-calendar .fc-toolbar-title {
+  color: #1e293b;
+  font-size: 22px;
+  font-weight: 700;
+}
+.fc-toolbar-chunk {
+  font-weight: 500;
+}
+/* عنوان الشريط العلوي عند التمرير */
+/* أزرار الشريط العلوي */
+.my-custom-calendar .fc-button {
+  background-color: #3b82f6;
+  border: none;
+  color: white;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
+.my-custom-calendar .fc-button:hover {
+  background-color: #2563eb;
+}
+
+/* اليوم الحالي */
+.my-custom-calendar .fc-day-today {
+  background-color: #fef08a !important;
+}
+
+/* الأحداث داخل الشهر */
+.my-custom-calendar .fc-daygrid-event {
+  border: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* لون النص داخل الحدث */
+.my-custom-calendar .fc-event-title {
+  color: white;
+}
+
+/* نهاية الأسبوع */
+.my-custom-calendar .fc-day-sun,
+.my-custom-calendar .fc-day-sat {
+  background-color: #f1f5f9;
+}
+/* النافذة المنبثقة */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.modal-popup {
+  background-color: #e2e2e2;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 10px;
+  max-width: 90vw;
+}
+.edit-popup {
+  width: 350px;
+}
+.modal-input {
+  color: white;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  font-size: 14px;
+}
+.modal-select {
+  background-color: inherit;
+  color: black;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+}
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.title::placeholder {
+  color: white;
+}
+.modal-time-inputs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-time-inputs input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+/* .modal-buttons button:hover {
+  background-color: #e2e2e2;
+} */
+
+.modal input,
+.modal select {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.modal button:last-child {
+  background-color: #ef4444;
+}
+
+/* السهم */
+.popup-arrow {
+  width: 12px;
+  height: 12px;
+  background: white;
+  position: absolute;
+  transform: rotate(45deg);
+  box-shadow: -1px -1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.popup-arrow.right {
+  top: 50%;
+  left: -6px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.popup-arrow.left {
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.popup-arrow.top {
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.modal-time-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1px;
+  font-size: 13px;
+}
+.icon {
+  margin: 4px;
+}
+.modal-edit {
+  display: flex;
+  grid-column: 1 / span 2;
+  border-radius: 10px 0 0 0;
+}
+.modal-copy {
+  display: flex;
+
+  border-radius: 0 10px 0 0;
+}
+
+.modal-Leskaart {
+  display: flex;
+
+  border-radius: 0 0 10px 0;
+}
+.modal-cancel {
+  grid-column: 1 / span 2;
+  display: flex;
+  padding: 8px 16px;
+  border-radius: 0 0 0 10px;
+}
+.modal-delete {
+  background-color: #ef4444;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-edit:hover,
+.modal-cancel:hover,
+.modal-Leskaart:hover,
+.modal-copy:hover {
+  background-color: #5b606b;
+  transition: all 0.7s ease-in-out;
+}
+.modal-delete:hover {
+  background-color: #ff0000;
+}
+.modal-save {
+  background-color: #ff6b00;
+  color: white;
+  padding: 8px 36px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+.modal-save:hover {
+  background-color: #ce5600;
+}
+.modal-exit {
+  color: #aaa;
+  text-align: start;
+  padding: 8px 16px;
+  width: 60%;
+}
+.time-info {
+  background-color: white;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.time-info div {
+  width: 20%;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+.txt-input {
+  color: black;
+  width: 100%;
+  height: 60px;
+  padding: 2px;
+  margin-bottom: 5px;
+}
+.txt-input::placeholder {
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 400;
+}
+.pic-input {
+  color: black;
+  width: 100%;
+  height: 40px;
+  padding: 2px;
+  margin-bottom: 5px;
+}
+/*++++++++++++++*/
+/* .event-visit {
+  background-color: #3b82f6 !important;
+  color: white;
+}
+
+.event-meating {
+  background-color: #ef4444 !important;
+  color: white;
+}
+.event-work {
+  background-color: #10b981 !important;
+  color: white;
+}
+.event-study {
+  background-color: #f59e0b !important;
+  color: white;
+}
+.event-exam {
+  background-color: #8b5cf6 !important;
+  color: white;
+} */

@@ -1,0 +1,208 @@
+import React, { useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import "./calender.css";
+
+function Calender() {
+  const [open, setOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedInfo, setSelectedInfo] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [events, setEvents] = useState([
+    { title: "اجتماع - الفريق", date: "2025-04-25", assignedTo: "أحمد" },
+    { title: "زيارة - تسليم", date: "2025-04-26", assignedTo: "منى" },
+  ]);
+
+  const [filterType, setFilterType] = useState("الكل");
+  const [filterAssignedTo, setFilterAssignedTo] = useState("الكل");
+
+  const eventColorsByType = {
+    اجتماع: "#3b82f6",
+    زيارة: "#10b981",
+    موعد: "#f59e0b",
+    إيميل: "#8b5cf6",
+  };
+
+  const handleDateSelect = (info) => {
+    setSelectedInfo(info);
+    setEditMode(false);
+    setOpen(true);
+    setTitle("");
+    setType("");
+    setAssignedTo("");
+    setStartTime("");
+    setEndTime("");
+  };
+
+  const handleEventClick = (info) => {
+    const event = info.event;
+    const [eventType, eventTitle] = event.title.split(" - ");
+    setSelectedEvent(event);
+    setTitle(eventTitle);
+    setType(eventType);
+    setAssignedTo(event.extendedProps.assignedTo || "");
+    setStartTime(event.start ? event.start.toISOString().slice(11, 16) : "");
+    setEndTime(event.end ? event.end.toISOString().slice(11, 16) : "");
+    setEditMode(true);
+    setOpen(true);
+  };
+
+  const handleSaveEvent = () => {
+    if (!title || !type) return;
+
+    if (editMode && selectedEvent) {
+      selectedEvent.setProp("title", `${type} - ${title}`);
+      selectedEvent.setExtendedProp("assignedTo", assignedTo);
+      if (startTime) {
+        const newStart = new Date(selectedEvent.start);
+        newStart.setHours(...startTime.split(":"));
+        selectedEvent.setStart(newStart);
+      }
+      if (endTime) {
+        const newEnd = new Date(selectedEvent.end || selectedEvent.start);
+        newEnd.setHours(...endTime.split(":"));
+        selectedEvent.setEnd(newEnd);
+      }
+    } else if (selectedInfo) {
+      const startDate = new Date(selectedInfo.startStr);
+      const endDate = selectedInfo.endStr ? new Date(selectedInfo.endStr) : new Date(selectedInfo.startStr);
+      
+      if (startTime) {
+        const [sh, sm] = startTime.split(":");
+        startDate.setHours(sh, sm);
+      }
+      if (endTime) {
+        const [eh, em] = endTime.split(":");
+        endDate.setHours(eh, em);
+      }
+
+      const newEvent = {
+        title: `${type} - ${title}`,
+        start: startDate,
+        end: endDate,
+        allDay: selectedInfo.allDay,
+        assignedTo: assignedTo,
+      };
+      setEvents([...events, newEvent]);
+    }
+
+    setTitle("");
+    setType("");
+    setAssignedTo("");
+    setStartTime("");
+    setEndTime("");
+    setSelectedInfo(null);
+    setSelectedEvent(null);
+    setOpen(false);
+  };
+
+  const filteredEvents = events.filter((event) => {
+    const matchesType = filterType === "الكل" || event.title.includes(filterType);
+    const matchesAssignedTo = filterAssignedTo === "الكل" || (event.assignedTo === filterAssignedTo);
+    return matchesType && matchesAssignedTo;
+  });
+
+  return (
+    <div className="App">
+      <h2>تقويم الأحداث</h2>
+
+      {/* فلترة */}
+      <div className="filters">
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+          <option value="الكل">كل الأنواع</option>
+          <option value="اجتماع">اجتماع</option>
+          <option value="زيارة">زيارة</option>
+          <option value="موعد">موعد</option>
+          <option value="إيميل">إيميل</option>
+        </select>
+
+        <select value={filterAssignedTo} onChange={(e) => setFilterAssignedTo(e.target.value)}>
+          <option value="الكل">كل الأشخاص</option>
+          {/* استخراج أسماء الأشخاص بدون تكرار */}
+          {[...new Set(events.map((e) => e.assignedTo))].map((name) => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+      </div>
+
+      <FullCalendar
+        className="my-custom-calendar"
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        selectable={true}
+        editable={true}
+        select={handleDateSelect}
+        events={filteredEvents}
+        eventClick={handleEventClick}
+        eventResizableFromStart={true}
+        eventDidMount={(info) => {
+          const title = info.event.title;
+          const type = Object.keys(eventColorsByType).find((t) =>
+            title.includes(t)
+          );
+          const color = eventColorsByType[type] || "#6b7280";
+          info.el.style.backgroundColor = color;
+          info.el.style.color = "white";
+          info.el.style.borderRadius = "5px";
+        }}
+      />
+
+      {open && (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <h3>{editMode ? "تعديل الحدث" : "إضافة حدث جديد"}</h3>
+            <input
+              type="text"
+              placeholder="عنوان الحدث"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <select value={type} onChange={(e) => setType(e.target.value)}>
+              <option value="">اختر نوع الحدث</option>
+              <option value="اجتماع">اجتماع</option>
+              <option value="زيارة">زيارة</option>
+              <option value="موعد">موعد</option>
+              <option value="إيميل">إيميل</option>
+            </select>
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              placeholder="بداية المهمة"
+            />
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              placeholder="نهاية المهمة"
+            />
+            <input
+              type="text"
+              placeholder="المسؤول عن المهمة"
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+            />
+            <button onClick={handleSaveEvent}>
+              {editMode ? "حفظ التعديلات" : "إضافة"}
+            </button>
+            <button onClick={() => setOpen(false)}>إلغاء</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Calender;
